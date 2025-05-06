@@ -6,7 +6,6 @@ const nextConfig = {
   },
   typescript: {
     // Disable TypeScript errors during production builds
-    ignoreBuildErrors: true,
   },
   output: 'standalone',
   images: {
@@ -16,6 +15,7 @@ const nextConfig = {
     config.resolve.fallback = { fs: false, path: false };
     return config;
   },
+  distDir: '.next',
 };
 
 module.exports = nextConfig;

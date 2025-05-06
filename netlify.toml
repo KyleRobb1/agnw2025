@@ -1,13 +1,11 @@
 [build]
   command = "npm run build"
-  publish = "out"
+  publish = "/opt/build/repo/.next"
   functions = "functions"
 
 [dev]
-  command = "npm run dev"
-  port = 3000
-  targetPort = 3000
   framework = "nextjs"
+  targetPort = 3000
 
 [context.production.environment]
   NEXT_PUBLIC_SUPABASE_URL = "https://mxjkzmkejjzrnijlgzst.supabase.co"
@@ -16,6 +14,9 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+  inputs = {
+    distDir = ".next"
+  }
 
 [[redirects]]
   from = "/api/*"
