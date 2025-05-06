@@ -12,9 +12,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    isrMemoryCacheSize: 0,
-  },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, path: false };
     return config;

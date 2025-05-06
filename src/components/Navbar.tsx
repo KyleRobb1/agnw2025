@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -116,72 +116,59 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="fixed top-16 left-0 w-full bg-white shadow-lg"
-        >
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-col space-y-4">
-              <Link href="/lineup" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                Lineup
-              </Link>
-              <Link href="/info" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                Info
-              </Link>
-              <Link href="/tickets" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                Tickets
-              </Link>
-              <Link href="/sustainability" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                Sustainability
-              </Link>
-              <Link href="/contact" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                Contact
-              </Link>
-              {authLinks.map((link, index) => (
-                link.onClick ? (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      link.onClick();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="px-4 py-2 text-gray-800 hover:text-gray-600 transition-colors"
-                  >
-                    {link.label}
-                  </button>
-                ) : (
-                  <Link
-                    key={index}
-                    href={link.href}
-                    className="px-4 py-2 text-gray-800 hover:text-gray-600 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              ))}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-16 w-full bg-white shadow-lg z-40"
+          >
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex flex-col space-y-4">
+                <Link href="/lineup" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Lineup
+                </Link>
+                <Link href="/info" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Info
+                </Link>
+                <Link href="/tickets" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Tickets
+                </Link>
+                <Link href="/sustainability" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Sustainability
+                </Link>
+                <Link href="/contact" className="text-gray-800 hover:text-gray-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  Contact
+                </Link>
+                {authLinks.map((link, index) => (
+                  link.onClick ? (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        link.onClick();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="px-4 py-2 text-gray-800 hover:text-gray-600 transition-colors"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <Link
+                      key={index}
+                      href={link.href}
+                      className="px-4 py-2 text-gray-800 hover:text-gray-600 transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                ))}
+              </div>
             </div>
-              className="text-light-text hover:text-neon-green py-2 border-b border-grey-text/20"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Contact
-            </Link>
-            <Link 
-              href="/tickets" 
-              className="btn-primary text-center mt-4"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Buy Tickets
-            </Link>
-          </div>
-        </motion.div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
-
-export default Navbar;
