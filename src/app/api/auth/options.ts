@@ -29,7 +29,7 @@ export const authOptions = {
           password: credentials.password
         });
 
-        if (error) {
+        if (error || !user || !user.email) {
           throw new Error('Invalid credentials');
         }
 
@@ -49,7 +49,7 @@ export const authOptions = {
     error: '/auth/error'
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: any, token: any }) {
       if (session.user) {
         session.user.id = token.sub;
       }
