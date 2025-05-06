@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, MotionProps } from 'framer-motion';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 
@@ -100,6 +100,8 @@ const artists = [
   },
 ];
 
+const MotionDiv = motion.div as React.ComponentType<MotionProps<"div"> & React.RefAttributes<HTMLDivElement>>;
+
 export default function LineUp() {
   const [selectedArtist, setSelectedArtist] = useState<any>(null);
   const [filter, setFilter] = useState('all');
@@ -163,7 +165,7 @@ export default function LineUp() {
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredArtists.map((artist) => (
-              <motion.div 
+              <MotionDiv 
                 key={artist.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -187,7 +189,7 @@ export default function LineUp() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
