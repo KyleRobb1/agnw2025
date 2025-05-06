@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -13,8 +13,9 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const authOptions = {
   providers: [
-    Credentials({
-      name: 'Credentials',
+    CredentialsProvider({
+      id: 'supabase',
+      name: 'Supabase',
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
@@ -29,7 +30,7 @@ export const authOptions = {
           password: credentials.password
         });
 
-        if (error || !user) {
+        if (error) {
           throw new Error('Invalid credentials');
         }
 
@@ -46,11 +47,10 @@ export const authOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    signOut: '/auth/signout',
     error: '/auth/error'
   },
   callbacks: {
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub;
       }
@@ -59,6 +59,6 @@ export const authOptions = {
   }
 };
 
-const handler = NextAuth(authOptions);
+export default NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+export { NextAuth as GET, NextAuth as POST };
