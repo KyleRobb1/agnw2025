@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FormEvent } from 'react';
+import { signIn } from 'next-auth/react';
 
 export default function SignUp() {
   const [name, setName] = useState('');
@@ -10,7 +12,7 @@ export default function SignUp() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -34,11 +36,11 @@ export default function SignUp() {
         redirect: false,
         email,
         password,
-      });
+      }) as any;
 
       router.push('/');
-    } catch (error) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
