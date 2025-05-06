@@ -16,6 +16,9 @@ const nextConfig = {
     return config;
   },
   distDir: '.next',
+  experimental: {
+    optimizePackageImports: ['@supabase/supabase-js'],
+  },
 };
 
 module.exports = nextConfig;
