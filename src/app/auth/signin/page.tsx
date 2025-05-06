@@ -2,13 +2,14 @@
 
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import { FormEvent } from 'react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -17,15 +18,15 @@ export default function SignIn() {
         redirect: false,
         email,
         password,
-      });
+      }) as any;
 
       if (result?.error) {
         throw new Error(result.error);
       } else {
         window.location.href = '/';
       }
-    } catch (error) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
