@@ -8,9 +8,16 @@ const nextConfig = {
     // Disable TypeScript errors during production builds
     ignoreBuildErrors: true,
   },
-  output: 'export', // Generate static HTML files for deployment
+  output: 'standalone',
   images: {
-    unoptimized: true, // Required for static export
+    unoptimized: true,
+  },
+  experimental: {
+    isrMemoryCacheSize: 0,
+  },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, path: false };
+    return config;
   },
 };
 

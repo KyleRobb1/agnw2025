@@ -1,9 +1,23 @@
 [build]
   command = "npm run build"
   publish = "out"
+  functions = "functions"
 
 [dev]
   command = "npm run dev"
   port = 3000
   targetPort = 3000
-  framework = "next"
+  framework = "nextjs"
+
+[context.production.environment]
+  NEXT_PUBLIC_SUPABASE_URL = "https://mxjkzmkejjzrnijlgzst.supabase.co"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14amt6bWtlamp6cm5pamxgenN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0OTEyMjksImV4cCI6MjA2MjA2NzIyOX0.s9FAXFOezWxyzhoY7nfVh0iy70MyNic8Oei8PzMU31s"
+  SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14amt6bWtlamp6cm5pamxgenN0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjQ5MTIyOSwiZXhwIjoyMDYyMDY3MjI5fQ.gIBtbg1HahzlWgbfUAMxYN2RCRV1kaeeXRq7bLggnTg"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
