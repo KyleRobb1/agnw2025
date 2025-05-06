@@ -14,9 +14,7 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  inputs = {
-    distDir = ".next"
-  }
+  inputs = { distDir = ".next" }
 
 [[redirects]]
   from = "/api/*"
