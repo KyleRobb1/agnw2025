@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #121212;
+  --foreground: #F5F5F5;
+  --neon-green: #39FF14;
+  --electric-violet: #9D00FF;
+  --glitch-pink: #FF00FF;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-dark text-light-text;
+    background-image: url('/noise.png');
+    background-blend-mode: overlay;
+    background-size: 200px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tighter;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-bg-darker;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neon-green/50 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neon-green;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply relative px-3 py-2 text-light-text hover:text-neon-green transition-colors duration-300;
+  }
+
+  .nav-link::after {
+    @apply content-[''] absolute left-0 bottom-0 w-0 h-[2px] bg-neon-green transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  .btn-primary {
+    @apply bg-neon-green text-dark-text font-bold py-3 px-6 rounded-sm hover:bg-neon-green/80 transition-all duration-300 uppercase tracking-wider;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent border-2 border-electric-violet text-light-text font-bold py-3 px-6 rounded-sm hover:bg-electric-violet/20 transition-all duration-300 uppercase tracking-wider;
+  }
+
+  .glitch-effect {
+    @apply relative inline-block;
+  }
+
+  .glitch-effect::before,
+  .glitch-effect::after {
+    @apply content-[attr(data-text)] absolute left-0 top-0 w-full h-full;
+  }
+
+  .glitch-effect::before {
+    @apply text-glitch-pink left-[2px] animate-glitch;
+  }
+
+  .glitch-effect::after {
+    @apply text-neon-green left-[-2px] animate-glitch;
+  }
+
+  .noise-overlay {
+    @apply pointer-events-none fixed inset-0 z-50 opacity-10 bg-noise-pattern;
+  }
+
+  .artist-card {
+    @apply relative overflow-hidden bg-bg-darker rounded-sm transition-all duration-500;
+  }
+
+  .artist-card:hover {
+    @apply transform scale-[1.02] shadow-lg shadow-neon-green/20;
+  }
+
+  .ticket-card {
+    @apply border border-electric-violet/30 bg-bg-darker p-6 rounded-sm hover:border-electric-violet transition-all duration-300;
+  }
+}
