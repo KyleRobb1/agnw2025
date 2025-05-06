@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/db/mongodb';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 
@@ -13,42 +12,14 @@ export async function GET() {
       );
     }
 
-    const client = await clientPromise;
-    const db = client.db();
-    
-    const user = await db.collection('users').findOne(
-      { email: session.user.email },
-      { projection: { password: 0 } }
-    );
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    // Get user's tickets
-    const tickets = await db
-      .collection('tickets')
-      .find({ userId: user._id })
-      .toArray();
-
     return NextResponse.json({
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-      tickets: tickets.map(ticket => ({
-        _id: ticket._id.toString(),
-        type: ticket.type,
-        price: ticket.price,
-        createdAt: ticket.createdAt
-      }))
+      email: session.user.email,
+      name: session.user.name
     });
   } catch (error) {
-    console.error('Profile error:', error);
+    console.error('Error fetching profile:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to fetch profile' },
       { status: 500 }
     );
   }

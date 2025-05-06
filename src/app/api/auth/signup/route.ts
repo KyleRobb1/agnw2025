@@ -1,41 +1,47 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import clientPromise from '@/lib/db/mongodb';
+import { createClient } from '@supabase/supabase-js';
 
-export async function POST(request) {
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export async function POST(request: Request) {
   try {
-    const { name, email, password } = await request.json();
+    const { email, password, name } = await request.json();
 
-    if (!name || !email || !password) {
+    if (!email || !password || !name) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    const client = await clientPromise;
-    const db = client.db();
+    const { data: { user }, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name
+        }
+      }
+    });
 
-    // Check if user already exists
-    const existingUser = await db.collection('users').findOne({ email });
-    if (existingUser) {
+    if (error || !user) {
       return NextResponse.json(
-        { error: 'User already exists' },
+        { error: error?.message || 'Failed to create user' },
         { status: 400 }
       );
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
-    const user = await db.collection('users').insertOne({
-      name,
-      email,
-      password: hashedPassword,
+    return NextResponse.json({
+      message: 'User created successfully',
+      userId: user.id
     });
-
-    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json(

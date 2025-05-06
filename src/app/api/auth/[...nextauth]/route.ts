@@ -1,71 +1,62 @@
 import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import clientPromise from '@/lib/db/mongodb';
-import bcrypt from 'bcryptjs';
+import Credentials from 'next-auth/providers/credentials';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const authOptions = {
-  adapter: MongoDBAdapter(clientPromise),
   providers: [
-    CredentialsProvider({
+    Credentials({
       name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Invalid credentials');
         }
 
-        try {
-          const client = await clientPromise;
-          const db = client.db();
-          const user = await db.collection('users').findOne({ email: credentials.email });
+        const { data: { user }, error } = await supabase.auth.signInWithPassword({
+          email: credentials.email,
+          password: credentials.password
+        });
 
-          if (!user) {
-            throw new Error('No user found with that email');
-          }
-
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-
-          if (!isPasswordValid) {
-            throw new Error('Invalid password');
-          }
-
-          return {
-            id: user._id.toString(),
-            email: user.email,
-            name: user.name,
-          };
-        } catch (error) {
-          throw new Error('Error logging in');
+        if (error || !user) {
+          throw new Error('Invalid credentials');
         }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.user_metadata?.full_name || user.email.split('@')[0]
+        };
       }
     })
   ],
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const
   },
   pages: {
     signIn: '/auth/signin',
     signOut: '/auth/signout',
-    error: '/auth/error',
+    error: '/auth/error'
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
-        session.user.id = token.id;
+        session.user.id = token.sub;
       }
       return session;
-    },
-  },
+    }
+  }
 };
 
 const handler = NextAuth(authOptions);
