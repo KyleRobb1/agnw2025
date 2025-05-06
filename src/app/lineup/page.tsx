@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 
@@ -169,7 +169,6 @@ export default function LineUp() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
                 whileTap={{ scale: 0.95 }}
-                {...HTMLMotionProps}
                 className="artist-card cursor-pointer"
                 onClick={() => openArtistModal(artist)}
               >
@@ -200,7 +199,6 @@ export default function LineUp() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            {...HTMLMotionProps}
             className="bg-bg-dark border border-grey-text/20 p-6 max-w-2xl w-full rounded-sm relative"
           >
             <button 
